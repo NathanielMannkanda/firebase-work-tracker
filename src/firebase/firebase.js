@@ -1,6 +1,6 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 //import { useAuthState} from 'react-firebase-hooks/auth';
 
@@ -13,11 +13,14 @@ const firebaseConfig =({
   messagingSenderId: "322115869487",
   appId: "1:322115869487:web:75225910a4aa498803dfda",
   measurementId: "G-99KR7EJ7WL"
-})
+});
 
-firebase.initializeApp(firebaseConfig)
+//firebase.initializeApp(firebaseConfig)
+//init app
+const app = initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+//services 
+const auth = getAuth(app);
+const firestore = getFirestore(app);
 
-export {auth, firestore, firebase};
+export {auth, firestore};

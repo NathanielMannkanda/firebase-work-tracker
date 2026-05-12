@@ -1,7 +1,7 @@
 function WorkerPage(){
   return(
     <div>
-      <h2>Logged In</h2>
+      <h2>Worker Dashboard</h2>
     </div>
   );
 }
