@@ -1,26 +1,39 @@
 import { firestore } from "../firebase/firebase";
+import { doc, setDoc } from "firebase/firestore";
+
 
 function RoleSelect({ user, setRole }) {
-  const selectRole = async (role) => {
-    await firestore.collection('users').doc(user.uid).set({
-      role: role, //user role
-      email: user.email, //user email
-      createdAt: new Date() //when user was made
-    });
-    setRole(role); //set the role
-  };
+  const chooseRole = async (selectRole) => {
+    try{
+      //reference to user doc
+      const userRef = doc(firestore,"users", user.uid);
+
+      //saves data to firestore
+      await setDoc(userRef, {
+        role: selectRole,
+        email: user.email,
+        name: user.displayName,
+        createdAt: new Date()
+      });
+
+      //update app state instantly
+      setRole(selectRole);
+    }catch(error){
+      console.log(error)
+    }
+  }
 
   return(
     <>
       <div className="p-20">
         <h2>Select your role</h2>
 
-        <button onClick={() => selectRole("worker")}>
-          I am a Worker
+        <button onClick={() => chooseRole("worker")}>
+          Worker
         </button>
 
-        <button onClick={() => selectRole("manager")}>
-          I am a Manager
+        <button onClick={() => chooseRole("manager")}>
+          Manager
         </button>
 
       </div>

@@ -9,6 +9,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import SignIn from './components/SignIn';
 import WorkerPage from './pages/WorkerPage';
 import RoleSelect from './components/RoleSelect'
+import ManagerPage from './components/ManagerDashboard';
 
 
 function App() {
@@ -69,7 +70,7 @@ function App() {
 
   //Load Manager Page
   if (role === "manager") {
-    return <div>Manager Dashbpard</div>
+    return <ManagerPage />
   }
 
   return <div>Something went wrong</div>; 
