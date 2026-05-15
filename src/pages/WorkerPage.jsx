@@ -9,6 +9,7 @@ import {
   query,
   where,
   onSnapshot,
+  getDocs,
   updateDoc,
   doc
 } from "firebase/firestore";
@@ -66,6 +67,24 @@ function WorkerPage() {
         clockIn: new Date(),
         clockOut: null
       };
+
+      const sessionsRef = collection(
+        firestore,
+        "workSessions"
+      );
+
+      const q = query(
+        sessionsRef,
+        where("userId", "==", user.uid),
+        where("status", "==", "active")
+      );
+
+      const existingSession = await getDocs(q);
+
+      if (!existingSession.empty) {
+        alert("You already have an active session.");
+        return;
+      }
 
       const docRef = await addDoc(
         collection(firestore, "workSessions"),
