@@ -15,7 +15,7 @@ import {
 import SignIn from './components/SignIn';
 import WorkerPage from './pages/WorkerPage';
 import RoleSelect from './components/RoleSelect'
-import ManagerPage from './components/ManagerDashboard';
+import ManagerPage from './pages/ManagerPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
