@@ -8,7 +8,7 @@ import {
   addDoc,
   query,
   where,
-  getDocs,
+  onSnapshot,
   updateDoc,
   doc
 } from "firebase/firestore";
@@ -21,32 +21,40 @@ function WorkerPage() {
 
   //check if worker is alr working/clocked in
   useEffect(() => {
-    const checkActiveSession = async () => {
-      try {
-        const sessionsRef = collection(firestore, "workSessions");
 
-        const q = query(
-          sessionsRef,
-          where("userId", "==", user.uid),
-          where("status", "==", "active")
-        );
-        const querySnapshot = await getDocs(q);
+  if (!user) return;
 
-        if (!querySnapshot) {
-          const sessionDoc = querySnapshot.docs[0];
+  const sessionsRef = collection(
+    firestore,
+    "workSessions"
+  );
 
-          setActiveSession({
-            id: sessionDoc.id,
-            ...sessionDoc.data()
-          });
-        }
-      } catch (error) {
-        console.log(error)
-      };
+  const q = query(
+    sessionsRef,
+    where("userId", "==", user.uid),
+    where("status", "==", "active")
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+
+    if (!snapshot.empty) {
+
+      const sessionDoc = snapshot.docs[0];
+
+      setActiveSession({
+        id: sessionDoc.id,
+        ...sessionDoc.data()
+      });
+
+    } else {
+
+      setActiveSession(null);
     }
+  });
 
-    checkActiveSession();
-  }, []);
+  return () => unsubscribe();
+
+}, [user]);
 
   //Clock in
   const handleClockIn = async () => {
