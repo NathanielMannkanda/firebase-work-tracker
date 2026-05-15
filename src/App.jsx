@@ -5,12 +5,18 @@ import { useEffect, useState } from 'react';
 import { useAuthState} from 'react-firebase-hooks/auth';
 import { auth, firestore } from './firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { 
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate 
+} from 'react-router-dom';
 
 import SignIn from './components/SignIn';
 import WorkerPage from './pages/WorkerPage';
 import RoleSelect from './components/RoleSelect'
 import ManagerPage from './components/ManagerDashboard';
-
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
 
@@ -58,36 +64,54 @@ function App() {
     return <div>Loading...</div>
   }
 
-  //when a role isnt selected
+  //no role selected yet
   if (!role) {
-    return <RoleSelect user={user} setRole={setRole} />
+    return <RoleSelect user={user} setRole={setRole} />;
   }
 
-  //Load Worker Page
-  if (role === "worker"){
-    return <WorkerPage />
-  }
+  return(
+    <BrowserRouter>
+      <Routes>
 
-  //Load Manager Page
-  if (role === "manager") {
-    return <ManagerPage />
-  }
+        {/*Login*/}
+        <Route
+          path="/"
+          element={
+            !user
+            ? <SignIn />
+            : <Navigate to={`/${role}`} />
+          } 
+        />
 
-  return <div>Something went wrong</div>; 
-  /*(
-    <>
-      <div className='App'>
-        <header>
-          <h1 className='text-2xl'>Work Tracker</h1>
-        </header>
+        {/*Worker*/}
+        <Route 
+          path="/worker"
+          element={
+            <ProtectedRoute 
+              user={user}
+              role={role}
+              allowedRole="worker">
+              <WorkerPage />
+            </ProtectedRoute>
+          }
+        />
 
-        <section>
-          {user ? <WorkerPage /> : <SignIn />}
-        </section>
+        {/*Manager*/}
+        <Route 
+          path="/manager"
+          element={
+            <ProtectedRoute 
+              user={user}
+              role={role}
+              allowedRole="manager">
+              <ManagerPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
 
-      </div>
-    </>
-  )*/
+    </BrowserRouter>
+  )
 }
 
 
