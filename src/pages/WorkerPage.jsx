@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import DashboardLayout from "../components/layout/DashboardLayout";
 import { auth, firestore } from "../firebase/firebase";
 
-import { 
+
+import {
   collection,
   addDoc,
   query,
@@ -9,9 +11,9 @@ import {
   getDocs,
   updateDoc,
   doc
- } from "firebase/firestore";
+} from "firebase/firestore";
 
-function WorkerPage(){
+function WorkerPage() {
 
   const [activeSession, setActiveSession] = useState(null);
 
@@ -30,7 +32,7 @@ function WorkerPage(){
         );
         const querySnapshot = await getDocs(q);
 
-        if(!querySnapshot){
+        if (!querySnapshot) {
           const sessionDoc = querySnapshot.docs[0];
 
           setActiveSession({
@@ -38,7 +40,7 @@ function WorkerPage(){
             ...sessionDoc.data()
           });
         }
-      } catch(error){
+      } catch (error) {
         console.log(error)
       };
     }
@@ -48,7 +50,7 @@ function WorkerPage(){
 
   //Clock in
   const handleClockIn = async () => {
-    try{
+    try {
       const sessionData = {
         userId: user.uid,
         userName: user.displayName,
@@ -57,30 +59,30 @@ function WorkerPage(){
         clockOut: null
       };
 
-    const docRef = await addDoc(
-      collection(firestore, "workSessions"),
-      sessionData
-    );
+      const docRef = await addDoc(
+        collection(firestore, "workSessions"),
+        sessionData
+      );
 
-    setActiveSession({
-      id: docRef.id,
-      ...sessionData
-    });
+      setActiveSession({
+        id: docRef.id,
+        ...sessionData
+      });
 
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
   }
 
   //Clock out 
   const handleClockOut = async () => {
-    try{
+    try {
       const sessionRef = doc(
         firestore,
         "workSessions",
         activeSession.id
       );
-      
+
       await updateDoc(sessionRef, {
         status: "completed",
         clockOut: new Date()
@@ -88,35 +90,89 @@ function WorkerPage(){
 
       setActiveSession(null);
 
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
   }
-  return(
-    <>
-    <div>
-      <h2>Worker Dashboard</h2>
-      {!activeSession ? (
+  return (
+    <DashboardLayout title="Worker Dashboard">
 
-    
-      <button onClick={handleClockIn}>
-        Clock In
-      </button>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-      ) : (
-      <div>
-        <p>
-          You are currently working
-        </p>
+        {/* STATUS CARD */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm">
 
-        <button onClick={handleClockOut}>
-          Clock Out
-        </button>
+          <h3 className="text-lg font-semibold mb-4">
+            Work Status
+          </h3>
+
+          {!activeSession ? (
+
+            <div>
+
+              <p className="text-gray-500 mb-4">
+                You are currently off duty
+              </p>
+
+              <button
+                onClick={handleClockIn}
+                className="bg-black text-white px-4 py-2 rounded-xl cursor-pointer"
+              >
+                Clock In
+              </button>
+
+            </div>
+
+          ) : (
+
+            <div>
+
+              <p className="text-green-600 font-medium mb-4">
+                Currently Working
+              </p>
+
+              <button
+                onClick={handleClockOut}
+                className="bg-red-500 text-white px-4 py-2 rounded-xl"
+              >
+                Clock Out
+              </button>
+
+            </div>
+
+          )}
+
+        </div>
+
+        {/* HOURS CARD */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm">
+
+          <h3 className="text-lg font-semibold mb-2">
+            Hours Today
+          </h3>
+
+          <p className="text-3xl font-bold">
+            0.0h
+          </p>
+
+        </div>
+
+        {/* TASKS CARD */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm">
+
+          <h3 className="text-lg font-semibold mb-2">
+            Active Tasks
+          </h3>
+
+          <p className="text-3xl font-bold">
+            0
+          </p>
+
+        </div>
+
       </div>
-      )
-      }
-    </div>
-    </>
+
+    </DashboardLayout>
   );
 }
 
