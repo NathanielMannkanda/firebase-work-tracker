@@ -17,6 +17,7 @@ import {
 function WorkerPage() {
 
   const [activeSession, setActiveSession] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState("");
 
   const user = auth.currentUser;
 
@@ -121,6 +122,52 @@ function WorkerPage() {
       console.log(error)
     }
   }
+
+  useEffect(() => {
+
+  if (!activeSession?.clockIn) {
+    // eslint-disable-next-line
+    setElapsedTime(`${elapsedTime}`);
+    return;
+  }
+
+  const updateTimer = () => {
+
+      const clockInTime =
+      activeSession.clockIn.seconds
+      ? activeSession.clockIn.seconds * 1000
+      : new Date(activeSession.clockIn).getTime();
+
+    const now = Date.now();
+
+    const difference = now - clockInTime;
+
+    const hours = Math.floor(
+      difference / (1000 * 60 * 60)
+    );
+
+    const minutes = Math.floor(
+      (difference % (1000 * 60 * 60))
+      / (1000 * 60)
+    );
+
+    const seconds = Math.floor(
+      (difference % (1000 * 60))
+      / 1000
+    );
+
+    setElapsedTime(
+      `${hours}h ${minutes}m ${seconds}s`
+    );
+  };
+
+  updateTimer();
+
+  const interval = setInterval(updateTimer, 1000);
+
+  return () => clearInterval(interval);
+
+}, [activeSession]);
   return (
     <DashboardLayout title="Worker Dashboard">
 
@@ -160,7 +207,7 @@ function WorkerPage() {
 
               <button
                 onClick={handleClockOut}
-                className="bg-red-500 text-white px-4 py-2 rounded-xl"
+                className="bg-red-500 text-white px-4 py-2 rounded-xl cursor-pointer"
               >
                 Clock Out
               </button>
@@ -172,14 +219,14 @@ function WorkerPage() {
         </div>
 
         {/* HOURS CARD */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm">
+        <div className="bg-white p-6 rounded-2xl shadow-sm h-30">
 
           <h3 className="text-lg font-semibold mb-2">
-            Hours Today
+            Time Spent Working
           </h3>
 
           <p className="text-3xl font-bold">
-            0.0h
+            {elapsedTime}
           </p>
 
         </div>
