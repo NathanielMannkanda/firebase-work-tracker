@@ -166,7 +166,8 @@ function WorkerPage() {
   const interval = setInterval(updateTimer, 1000);
 
   return () => clearInterval(interval);
-
+  
+// eslint-disable-next-line
 }, [activeSession]);
   return (
     <DashboardLayout title="Worker Dashboard">
