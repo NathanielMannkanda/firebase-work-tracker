@@ -4,38 +4,68 @@ import DashboardLayout from "../components/layout/DashboardLayout";
 
 import { firestore } from "../firebase/firebase";
 
+import { auth } from "../firebase/firebase";
+
 import { 
   collection,
-  onSnapshot
+  onSnapshot,
+  query,
+  where
  } from "firebase/firestore";
 
-function TasksPage() {
+function TasksPage({ role }) {
 
   const [tasks, setTasks] = useState([]);
 
+  const user = auth.currentUser;
+
   useEffect(() => {
+
+    if (!user) return;
+
     const tasksRef = collection(
       firestore,
       "tasks"
     );
 
+    let q;
+
+    // manager sees all tasks
+    if (role === "manager") {
+
+      q = query(tasksRef);
+
+    } else {
+
+      // worker only sees their tasks
+      q = query(
+        tasksRef,
+        where("assignedTo", "==", user.uid)
+      );
+    }
+
     const unsubscribe = onSnapshot(
-      tasksRef,
+      q,
       (snapshot) => {
+
         const taskList = [];
 
         snapshot.forEach((doc) => {
+
           taskList.push({
             id: doc.id,
             ...doc.data()
           });
+
         });
+
         setTasks(taskList);
       }
     );
 
-    return () => unsubscribe();
-  }, []);
+  return () => unsubscribe();
+
+  }, [user, role]);
 
   return (
     <DashboardLayout title="Tasks">
@@ -48,14 +78,17 @@ function TasksPage() {
           <p>No tasks found</p>
         ): (
           tasks.map((task) => (
-            <div className="bg-white p-5 rounded-2xl shadow-sm border">
+            <div 
+              key={task.id}
+              className="bg-white p-5 rounded-2xl shadow-sm border"
+            >
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-xl font-semibold">
                     {task.title}
                   </h3>
 
-                  <p className="text-gray-500 mt-1 break-word">
+                  <p className="text-gray-500 mt-1 break-words">
                     {task.description}
                   </p>
 

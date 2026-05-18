@@ -116,8 +116,8 @@ function App() {
             <ProtectedRoute 
               user={user}
               role={role}
-              allowedRole="manager">
-              <TasksPage />
+            >
+              <TasksPage role={role} />
             </ProtectedRoute>
           }
         />
