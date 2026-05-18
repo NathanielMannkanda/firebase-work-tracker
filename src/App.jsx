@@ -18,6 +18,7 @@ import RoleSelect from './components/RoleSelect'
 import ManagerPage from './pages/ManagerPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 import TasksPage from './pages/TasksPage';
+import SessionsPage from './pages/SessionsPage';
 
 function App() {
 
@@ -118,6 +119,18 @@ function App() {
               role={role}
             >
               <TasksPage role={role} />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route 
+          path="/sessions"
+          element={
+            <ProtectedRoute 
+              user={user}
+              role={role}
+            >
+              <SessionsPage />
             </ProtectedRoute>
           }
         />
