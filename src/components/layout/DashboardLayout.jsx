@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 function DashboardLayout({ children, title}){
   return(
@@ -12,17 +13,25 @@ function DashboardLayout({ children, title}){
         </div>
 
         <nav>
-          <button className="w-full text-left p-3 rounded-lg hover:bg-gray-100">
+          <Link
+            to="/manager"
+            className="block w-full text-left p-3 rounded-lg hover:bg-gray-100"
+          >
             Dashboard
-          </button>
+          </Link>
 
-          <button className="w-full text-left p-3 rounded-lg hover:bg-gray-100">
+          <Link 
+            to="/sessions"
+            className="block w-full text-left p-3 rounded-lg hover:bg-gray-100"
+          >
             Sessions
-          </button>
+          </Link>
 
-          <button className="w-full text-left p-3 rounded-lg hover:bg-gray-100">
+          <Link 
+            to="/tasks"
+            className="block w-full text-left p-3 rounded-lg hover:bg-gray-100">
             Tasks
-          </button>
+          </Link>
         </nav>
       </aside>
 

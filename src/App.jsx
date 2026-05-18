@@ -17,6 +17,7 @@ import WorkerPage from './pages/WorkerPage';
 import RoleSelect from './components/RoleSelect'
 import ManagerPage from './pages/ManagerPage';
 import ProtectedRoute from './routes/ProtectedRoute';
+import TasksPage from './pages/TasksPage';
 
 function App() {
 
@@ -105,6 +106,18 @@ function App() {
               role={role}
               allowedRole="manager">
               <ManagerPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route 
+          path="/tasks"
+          element={
+            <ProtectedRoute 
+              user={user}
+              role={role}
+              allowedRole="manager">
+              <TasksPage />
             </ProtectedRoute>
           }
         />
