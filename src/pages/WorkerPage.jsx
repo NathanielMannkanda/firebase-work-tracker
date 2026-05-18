@@ -18,6 +18,7 @@ function WorkerPage() {
 
   const [activeSession, setActiveSession] = useState(null);
   const [elapsedTime, setElapsedTime] = useState("");
+  const [tasks, setTasks] = useState([]);
 
   const user = auth.currentUser;
 
@@ -123,6 +124,23 @@ function WorkerPage() {
     }
   }
 
+  //Task completion checker
+  const handleCompleteTask = async (taskId) => {
+    try {
+      const taskRef = doc(
+        firestore,
+        "tasks",
+        taskId
+      );
+
+      await updateDoc(taskRef, {
+        status: "completed"
+      });
+    }catch(error){
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
 
   if (!activeSession?.clockIn) {
@@ -166,16 +184,45 @@ function WorkerPage() {
   const interval = setInterval(updateTimer, 1000);
 
   return () => clearInterval(interval);
-  
+
 // eslint-disable-next-line
 }, [activeSession]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const tasksRef = collection(
+      firestore,
+      "tasks"
+    );
+
+    const q = query(
+      tasksRef,
+      where("assignedTo", "==", user.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const taskList = [];
+
+      snapshot.forEach((doc) => {
+        taskList.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+      setTasks(taskList);
+    });
+
+    return () => unsubscribe();
+  }, [user]);  
+
   return (
     <DashboardLayout title="Worker Dashboard">
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* STATUS CARD */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm">
+        <div className="bg-white p-6 rounded-2xl shadow-sm h-50">
 
           <h3 className="text-lg font-semibold mb-4">
             Work Status
@@ -220,7 +267,7 @@ function WorkerPage() {
         </div>
 
         {/* HOURS CARD */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm h-30">
+        <div className="bg-white p-6 rounded-2xl shadow-sm h-50">
 
           <h3 className="text-lg font-semibold mb-2">
             Time Spent Working
@@ -233,15 +280,65 @@ function WorkerPage() {
         </div>
 
         {/* TASKS CARD */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm">
+        <div className="bg-white p-6 rounded-2xl shadow-sm md:col-span-3">
 
-          <h3 className="text-lg font-semibold mb-2">
-            Active Tasks
+          <h3 className="text-xl font-semibold mb-6">
+            Assigned Taks
           </h3>
+          
+          {tasks.length === 0? (
+            <p className="text-3xl font-bold">
+            No assigned tasks 
+            </p>
+          ): (
+            <div>
+              {tasks.map((task) => (
+                <div
+                  key={task.id}
+                  className="border rounded-2xl p-4 flex items-center justify-between mb-2"  
+                >
+                  <div>
+                    <h4>
+                      {task.title}
+                    </h4>
 
-          <p className="text-3xl font-bold">
-            0
-          </p>
+                    <p className="text-gray-500">
+                      {task.description}
+                    </p>
+
+                    <p className="mt-2 text-sm">
+                      Status:
+                      {" "}
+
+                      <span 
+                        className={
+                          task.status === "completed"
+                          ? "text-green-600"
+                          : "text-yellow-600"
+                        }
+                      >
+                        {task.status}
+                      </span>
+                    </p>
+                  </div>
+                  
+                  {task.status !== "completed" && (
+                    <button
+                      onClick={() => 
+                        handleCompleteTask(task.id)
+                      }
+
+                      className="bg-black text-white px-4 py-2 rounded-xl"
+                    >
+                      Complete
+                    </button>
+                  )}
+
+                </div>
+
+              ))}
+            </div>
+          )}
 
         </div>
 

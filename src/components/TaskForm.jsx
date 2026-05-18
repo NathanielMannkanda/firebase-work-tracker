@@ -32,8 +32,8 @@ function TaskForm({ workers }) {
         {
           title,
           description,
-          assinedTo: selectedWorker,
-          assinedToName: workData.name,
+          assignedTo: selectedWorker,
+          assignedToName: workData.name,
           status: "pending",
           createdAt: serverTimestamp()
         }
