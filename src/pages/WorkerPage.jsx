@@ -141,6 +141,23 @@ function WorkerPage() {
     }
   }
 
+  //for clearing tasks
+  const handleClearTask = async (taskId) => {
+    try {
+      const taskRef = doc(
+        firestore,
+        "tasks",
+        taskId
+      );
+
+      await updateDoc(taskRef, {
+        clearedByWorker: true
+      });
+    }catch(error){
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
 
   if (!activeSession?.clockIn) {
@@ -198,7 +215,8 @@ function WorkerPage() {
 
     const q = query(
       tasksRef,
-      where("assignedTo", "==", user.uid)
+      where("assignedTo", "==", user.uid),
+      where("clearedByWorker", "==", false)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -291,18 +309,18 @@ function WorkerPage() {
             No assigned tasks 
             </p>
           ): (
-            <div>
+            <div className="flex-1 min-w-0">
               {tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="border rounded-2xl p-4 flex items-center justify-between mb-2"  
+                  className="border rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2"  
                 >
                   <div>
                     <h4>
                       {task.title}
                     </h4>
 
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 break-words">
                       {task.description}
                     </p>
 
@@ -331,6 +349,18 @@ function WorkerPage() {
                       className="bg-black text-white px-4 py-2 rounded-xl"
                     >
                       Complete
+                    </button>
+                  )}
+
+                  {task.status === "completed" && (
+                    <button
+                      onClick={() => 
+                        handleClearTask(task.id)
+                      }
+
+                      className=" cursor-pointer bg-gray-200 px-4 py-2 rounded-xl"
+                    >
+                      Clear
                     </button>
                   )}
 
