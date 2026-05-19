@@ -135,14 +135,7 @@ function SessionsPage() {
             <div
               key={worker.userId}
               className="
-                bg-white
-                p-5
-                rounded-2xl
-                shadow-sm
-                border
-                flex
-                justify-between
-                items-center
+                bg-[#1c1c1e] p-5 rounded-2xl shadow-sm border flex justify-between items-center border-gray-800
               "
             >
 

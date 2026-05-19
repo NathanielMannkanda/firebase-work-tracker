@@ -25,39 +25,39 @@ function WorkerPage() {
   //check if worker is alr working/clocked in
   useEffect(() => {
 
-  if (!user) return;
+    if (!user) return;
 
-  const sessionsRef = collection(
-    firestore,
-    "workSessions"
-  );
+    const sessionsRef = collection(
+      firestore,
+      "workSessions"
+    );
 
-  const q = query(
-    sessionsRef,
-    where("userId", "==", user.uid),
-    where("status", "==", "active")
-  );
+    const q = query(
+      sessionsRef,
+      where("userId", "==", user.uid),
+      where("status", "==", "active")
+    );
 
-  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, (snapshot) => {
 
-    if (!snapshot.empty) {
+      if (!snapshot.empty) {
 
-      const sessionDoc = snapshot.docs[0];
+        const sessionDoc = snapshot.docs[0];
 
-      setActiveSession({
-        id: sessionDoc.id,
-        ...sessionDoc.data()
-      });
+        setActiveSession({
+          id: sessionDoc.id,
+          ...sessionDoc.data()
+        });
 
-    } else {
+      } else {
 
-      setActiveSession(null);
-    }
-  });
+        setActiveSession(null);
+      }
+    });
 
-  return () => unsubscribe();
+    return () => unsubscribe();
 
-}, [user]);
+  }, [user]);
 
   //Clock in
   const handleClockIn = async () => {
@@ -136,7 +136,7 @@ function WorkerPage() {
       await updateDoc(taskRef, {
         status: "completed"
       });
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   }
@@ -153,57 +153,57 @@ function WorkerPage() {
       await updateDoc(taskRef, {
         clearedByWorker: true
       });
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
   }
 
   useEffect(() => {
 
-  if (!activeSession?.clockIn) {
-    // eslint-disable-next-line
-    setElapsedTime(`${elapsedTime}`);
-    return;
-  }
+    if (!activeSession?.clockIn) {
+      // eslint-disable-next-line
+      setElapsedTime(`${elapsedTime}`);
+      return;
+    }
 
-  const updateTimer = () => {
+    const updateTimer = () => {
 
       const clockInTime =
-      activeSession.clockIn.seconds
-      ? activeSession.clockIn.seconds * 1000
-      : new Date(activeSession.clockIn).getTime();
+        activeSession.clockIn.seconds
+          ? activeSession.clockIn.seconds * 1000
+          : new Date(activeSession.clockIn).getTime();
 
-    const now = Date.now();
+      const now = Date.now();
 
-    const difference = now - clockInTime;
+      const difference = now - clockInTime;
 
-    const hours = Math.floor(
-      difference / (1000 * 60 * 60)
-    );
+      const hours = Math.floor(
+        difference / (1000 * 60 * 60)
+      );
 
-    const minutes = Math.floor(
-      (difference % (1000 * 60 * 60))
-      / (1000 * 60)
-    );
+      const minutes = Math.floor(
+        (difference % (1000 * 60 * 60))
+        / (1000 * 60)
+      );
 
-    const seconds = Math.floor(
-      (difference % (1000 * 60))
-      / 1000
-    );
+      const seconds = Math.floor(
+        (difference % (1000 * 60))
+        / 1000
+      );
 
-    setElapsedTime(
-      `${hours}h ${minutes}m ${seconds}s`
-    );
-  };
+      setElapsedTime(
+        `${hours}h ${minutes}m ${seconds}s`
+      );
+    };
 
-  updateTimer();
+    updateTimer();
 
-  const interval = setInterval(updateTimer, 1000);
+    const interval = setInterval(updateTimer, 1000);
 
-  return () => clearInterval(interval);
+    return () => clearInterval(interval);
 
-// eslint-disable-next-line
-}, [activeSession]);
+    // eslint-disable-next-line
+  }, [activeSession]);
 
   useEffect(() => {
     if (!user) return;
@@ -232,7 +232,7 @@ function WorkerPage() {
     });
 
     return () => unsubscribe();
-  }, [user]);  
+  }, [user]);
 
   return (
     <DashboardLayout title="Worker Dashboard">
@@ -240,7 +240,7 @@ function WorkerPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* STATUS CARD */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm h-50">
+        <div className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm h-50">
 
           <h3 className="text-lg font-semibold mb-4">
             Work Status
@@ -285,7 +285,7 @@ function WorkerPage() {
         </div>
 
         {/* HOURS CARD */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm h-50">
+        <div className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm h-50">
 
           <h3 className="text-lg font-semibold mb-2">
             Time Spent Working
@@ -298,55 +298,53 @@ function WorkerPage() {
         </div>
 
         {/* TASKS CARD */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm md:col-span-3">
+        <div className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm md:col-span-3">
 
           <h3 className="text-xl font-semibold mb-6">
             Assigned Taks
           </h3>
-          
-          {tasks.length === 0? (
+
+          {tasks.length === 0 ? (
             <p className="text-3xl font-bold">
-            No assigned tasks 
+              No assigned tasks
             </p>
-          ): (
+          ) : (
             <div className="flex-1 min-w-0">
               {tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="border rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2"  
+                  className="border border-gray-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2 overflow-hidden"
                 >
-                  <div>
-                    <h4>
+                  <div className="flex-1 min-w-0">
+
+                    <h4 className="font-semibold break-words">
                       {task.title}
                     </h4>
 
-                    <p className="text-gray-500 break-words">
+                    <p className="text-gray-500 break-all">
                       {task.description}
                     </p>
 
                     <p className="mt-2 text-sm">
-                      Status:
-                      {" "}
+                      Status:{" "}
 
-                      <span 
+                      <span
                         className={
                           task.status === "completed"
-                          ? "text-green-600"
-                          : "text-yellow-600"
+                            ? "text-green-600"
+                            : "text-yellow-600"
                         }
                       >
                         {task.status}
                       </span>
                     </p>
+
                   </div>
-                  
+
                   {task.status !== "completed" && (
                     <button
-                      onClick={() => 
-                        handleCompleteTask(task.id)
-                      }
-
-                      className="bg-black text-white px-4 py-2 rounded-xl"
+                      onClick={() => handleCompleteTask(task.id)}
+                      className="bg-black text-white px-4 py-2 rounded-xl w-full md:w-auto"
                     >
                       Complete
                     </button>
@@ -354,16 +352,12 @@ function WorkerPage() {
 
                   {task.status === "completed" && (
                     <button
-                      onClick={() => 
-                        handleClearTask(task.id)
-                      }
-
-                      className=" cursor-pointer bg-gray-200 px-4 py-2 rounded-xl"
+                      onClick={() => handleClearTask(task.id)}
+                      className="cursor-pointer bg-[#ff9f0a] px-4 py-2 rounded-xl w-full md:w-auto"
                     >
                       Clear
                     </button>
                   )}
-
                 </div>
 
               ))}

@@ -13,6 +13,10 @@ function TaskForm({ workers }) {
   const [description, setDescription] = useState("");
   const [selectedWorker, setSelectedWorker] = useState("");
 
+  //for popup
+  const [showPopup, setShowPopup] = useState(false);
+  const [assignedWorkerName, setAssignedWorkerName] = useState("");
+
   const handleCreateTask = async (e) => {
 
     e.preventDefault();
@@ -40,6 +44,13 @@ function TaskForm({ workers }) {
         }
       );
 
+      setAssignedWorkerName(workData.name);
+      setShowPopup(true);
+
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 3000);
+
       setTitle("");
       setDescription("");
       setSelectedWorker("");
@@ -50,61 +61,73 @@ function TaskForm({ workers }) {
   };
 
   return (
-    <form
-    onSubmit={handleCreateTask}
-    className="bg-white p-6 rounded-2xl shadow-sm border min-w-100 max-w-200"
-    >
-      <h2 className="text-2xl font-bold mb-6">
-        Create Task
-      </h2>
+    <>
+      {showPopup && (
+        <div className="fixed top-6 right-6 bg-[#1c1c1c] text-white px-6 py-4 rounded-2xl z-50 animate-fade">
+          Task assigned to{" "}
+          <span className="font-bold">
+            {assignedWorkerName}
+          </span>
+        </div>
+      )}
+      <form
+      onSubmit={handleCreateTask}
+      className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 min-w-100 max-w-300 text-white"
+      >
+        <h2 className="text-2xl font-bold mb-6">
+          Create Task
+        </h2>
 
-      <div className="space-y-4">
+        <div className="space-y-4">
 
-        <input 
-          type="text"
-          placeholder="Task title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full border rounded-xl p-3"
-        />
+          <input 
+            type="text"
+            placeholder="Task title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full border border-gray-800  rounded-xl p-3"
+          />
 
-        <textarea
-          placeholder="Task description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full border rounded-xl p-3 h-28"
-        />
+          <textarea
+            placeholder="Task description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border border-gray-800 rounded-xl p-3 h-28"
+          />
 
-        <select
-          value={selectedWorker}
-          onChange={(e) => setSelectedWorker(e.target.value)}
-          className="w-full borer rounded-xl p-3"
-        >
-          <option value="">
-            Select Worker
-          </option>
-
-          {workers.map((worker) => (
-            <option
-              key={worker.id}
-              value={worker.id}>
-              {worker.name}
+          <select
+            value={selectedWorker}
+            onChange={(e) => setSelectedWorker(e.target.value)}
+            className="w-full rounded-xl p-3 border border-gray-800 bg-[#1c1c1e] text-white"
+          >
+            <option value="" className="bg-[#1c1c1e] text-white">
+              Select Worker
             </option>
 
-          ))}
+            {workers.map((worker) => (
+              <option
+                key={worker.id}
+                value={worker.id}
+                className="bg-[#1c1c1e] text-white"
+                >
+                {worker.name}
+              </option>
 
-        </select>
+            ))}
 
-        <button
-          type="submit"
-          className="bg-black text-white px-4 py-3 rounded-xl w-full hover:opacity-90"
-        >
-          Create Task
-        </button>
+          </select>
 
-      </div>
+          <button
+            type="submit"
+            className="bg-[#000000] text-white px-4 py-3 rounded-xl w-full hover:opacity-90"
+          >
+            Create Task
+          </button>
 
-    </form>
+        </div>
+
+      </form>
+    </>
   )
 }
 

@@ -6,12 +6,12 @@ import { firestore } from "../firebase/firebase";
 
 import { auth } from "../firebase/firebase";
 
-import { 
+import {
   collection,
   onSnapshot,
   query,
   where
- } from "firebase/firestore";
+} from "firebase/firestore";
 
 function TasksPage({ role }) {
 
@@ -63,7 +63,7 @@ function TasksPage({ role }) {
       }
     );
 
-  return () => unsubscribe();
+    return () => unsubscribe();
 
   }, [user, role]);
 
@@ -76,44 +76,45 @@ function TasksPage({ role }) {
 
         {tasks.length === 0 ? (
           <p>No tasks found</p>
-        ): (
+        ) : (
           tasks.map((task) => (
-            <div 
+            <div
               key={task.id}
-              className="bg-white p-5 rounded-2xl shadow-sm border"
+              className="bg-[#1c1c1e] p-5 rounded-2xl shadow-sm border border-gray-800 overflow-hidden w-full"
             >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-xl font-semibold">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 min-w-0">
+
+                <div className="flex-1 min-w-0">
+
+                  <h3 className="text-xl font-semibold break-words">
                     {task.title}
                   </h3>
 
-                  <p className="text-gray-500 mt-1 break-words">
+                  <p className="text-gray-500 mt-1 break-all">
                     {task.description}
                   </p>
 
                   <div className="mt-4 space-y-1">
                     <p className="text-sm">
-                      Assigned To:
-                      {" "}
+                      Assigned To:{" "}
+
                       <span className="font-medium">
                         {task.assignedToName}
                       </span>
                     </p>
 
                     <p>
-                      Status:
-                      {" "}
+                      Status:{" "}
 
                       <span
                         className={
                           task.status === "completed"
-                          ? "text-green-600 font-medium"
-                          : "text-yellow-600 font-medium"
-                        }>
-                          {task.status}
+                            ? "text-green-600 font-medium"
+                            : "text-yellow-600 font-medium"
+                        }
+                      >
+                        {task.status}
                       </span>
-
                     </p>
 
                   </div>
@@ -121,7 +122,6 @@ function TasksPage({ role }) {
                 </div>
 
               </div>
-
             </div>
           ))
         )}

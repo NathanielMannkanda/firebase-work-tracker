@@ -105,7 +105,7 @@ import {
 
               <div
                 key={worker.id}
-                className="bg-white p-6 rounded-2xl shadow-sm border w-fit"
+                className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 w-fit"
               >
 
                 <h3 className="text-lg font-semibold">
@@ -148,7 +148,7 @@ import {
 
               <div
                 key={worker.id}
-                className="bg-white p-6 rounded-2xl shadow-sm border w-fit hover:shadow-md transition"
+                className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 w-fit hover:shadow-md transition"
               >
 
                 <h3 className="text-lg font-semibold">
