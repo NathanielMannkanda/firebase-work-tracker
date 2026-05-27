@@ -1,6 +1,17 @@
 import { Link } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/firebase";
 
 function DashboardLayout({ children, title}){
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return(
     <div className="min-h-screen flex bg-[#111111] text-white">
 
@@ -36,6 +47,16 @@ function DashboardLayout({ children, title}){
           </Link>
 
         </nav>
+
+        {/*Logout*/}
+        <div className="p-4 border-t border-gray-800"> 
+          <button
+            onClick={handleLogout}
+            className="w-full bg-[#ff9500] hover:opacity-90 text-white py-3 rounded-xl font-medium cursor-pointer"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
 
       {/*Main */}
