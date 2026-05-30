@@ -25,3 +25,7 @@
 .animate-fade {
   animation: fadeSlide 3s ease forwards;
 }
+
+body{
+  background-color: black;
+}
