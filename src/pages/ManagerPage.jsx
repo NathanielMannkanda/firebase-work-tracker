@@ -8,6 +8,7 @@ import {
  } from "firebase/firestore";
  import DashboardLayout from "../components/layout/DashboardLayout";
  import TaskForm from "../components/TaskForm";
+ import { motion } from "framer-motion";
 
  function ManagerPage() {
 
@@ -87,7 +88,11 @@ import {
       <TaskForm workers={workers}/>
 
       {/* ALL WORKERS */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}  
+      >
 
         <h2 className="text-2xl font-bold mb-4">
           All Workers
@@ -99,7 +104,11 @@ import {
 
         ) : (
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }} 
+            className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             {workers.map((worker) => (
 
@@ -123,14 +132,18 @@ import {
               </div>
             ))}
 
-          </div>
+          </motion.div>
 
         )}
 
-      </div>
+      </motion.div>
 
       {/* ACTIVE WORKERS */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
 
         <h2 className="text-2xl font-bold mb-4">
           Currently Working
@@ -174,7 +187,7 @@ import {
 
         )}
 
-      </div>
+      </motion.div>
 
     </div>
 

@@ -7,6 +7,7 @@ import {
  } from "firebase/firestore";
 
 import { firestore } from "../firebase/firebase";
+import { motion } from "framer-motion";
 
 function TaskForm({ workers }) {
   const [title, setTitle] = useState("");
@@ -70,9 +71,12 @@ function TaskForm({ workers }) {
           </span>
         </div>
       )}
-      <form
-      onSubmit={handleCreateTask}
-      className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 min-w-100 max-w-300 text-white"
+      <motion.form
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        onSubmit={handleCreateTask}
+        className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 min-w-100 max-w-300 text-white"
       >
         <h2 className="text-2xl font-bold mb-6">
           Create Task
@@ -126,7 +130,7 @@ function TaskForm({ workers }) {
 
         </div>
 
-      </form>
+      </motion.form>
     </>
   )
 }

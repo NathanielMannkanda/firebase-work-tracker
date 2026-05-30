@@ -15,6 +15,8 @@ import {
  } from 'firebase/firestore';
 import { useState } from 'react';
 
+import { motion } from 'framer-motion';
+
 function SignIn(){
   const [email, setEmail] = useState("");
   const [passowrd, setPassword] = useState("");
@@ -136,9 +138,25 @@ function SignIn(){
   return(
     <>
       {error && (
-        <div className='fixed top-6 right-6 bg-red-500/10 border border-red-500 text-red-400 px-5 py-4 rounded-2xl shadow-2xl backdrop-bl ur-md fade-in z-50'>
+        <motion.div 
+          initial={{
+            opacity: 0,
+            x: 100
+          }}
+          animate={{
+            opacity: 1,
+            x: 0
+          }}
+          exit={{
+            opacity: 0,
+            x: 100
+          }}
+          transition={{
+            duration: 0.3
+          }}
+          className='fixed top-6 right-6 bg-red-500/10 border border-red-500 text-red-400 px-5 py-4 rounded-2xl shadow-2xl backdrop-bl ur-md fade-in z-50'>
           {error}
-        </div>
+        </motion.div>
       )}
       <div className="min-h-screen bg-[#000000] flex items-center justify-center px-4">
         

@@ -8,6 +8,7 @@ import {
   collection,
   onSnapshot
 } from "firebase/firestore";
+import { motion } from "framer-motion";
 
 function SessionsPage() {
   const [workerStats, setWorkerStats] = useState([]);
@@ -132,7 +133,10 @@ function SessionsPage() {
 
           workerStats.map((worker) => (
 
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
               key={worker.userId}
               className="
                 bg-[#1c1c1e] p-5 rounded-2xl shadow-sm border flex justify-between items-center border-gray-800
@@ -171,7 +175,7 @@ function SessionsPage() {
 
               </div>
 
-            </div>
+            </motion.div>
           ))
         )}
 

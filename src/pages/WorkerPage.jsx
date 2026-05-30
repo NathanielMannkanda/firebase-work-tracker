@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import { auth, firestore } from "../firebase/firebase";
+import { motion } from "framer-motion";
 
 
 import {
@@ -234,13 +235,44 @@ function WorkerPage() {
     return () => unsubscribe();
   }, [user]);
 
+  //animations
+  const container = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
+
+  // eslint-disable-next-line
+  const item = {
+    hidden: {
+      opacity: 0,
+      y: 20
+    },
+    show: {
+      opacity: 1,
+      y: 0
+    }
+  };
+
   return (
     <DashboardLayout title="Worker Dashboard">
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+      >
 
         {/* STATUS CARD */}
-        <div className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm h-50">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm h-50">
 
           <h3 className="text-lg font-semibold mb-4">
             Work Status
@@ -282,10 +314,14 @@ function WorkerPage() {
 
           )}
 
-        </div>
+        </motion.div>
 
         {/* HOURS CARD */}
-        <div className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm h-50">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm h-50">
 
           <h3 className="text-lg font-semibold mb-2">
             Time Spent Working
@@ -295,10 +331,14 @@ function WorkerPage() {
             {elapsedTime}
           </p>
 
-        </div>
+        </motion.div>
 
         {/* TASKS CARD */}
-        <div className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm md:col-span-3">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm md:col-span-3">
 
           <h3 className="text-xl font-semibold mb-6">
             Assigned Taks
@@ -364,7 +404,7 @@ function WorkerPage() {
             </div>
           )}
 
-        </div>
+        </motion.div>
 
       </div>
 

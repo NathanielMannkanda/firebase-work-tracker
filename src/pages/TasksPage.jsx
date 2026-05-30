@@ -12,6 +12,8 @@ import {
   query,
   where
 } from "firebase/firestore";
+import { motion } from "framer-motion";
+motion
 
 function TasksPage({ role }) {
 
@@ -78,7 +80,10 @@ function TasksPage({ role }) {
           <p>No tasks found</p>
         ) : (
           tasks.map((task) => (
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
               key={task.id}
               className="bg-[#1c1c1e] p-5 rounded-2xl shadow-sm border border-gray-800 overflow-hidden w-full"
             >
@@ -122,7 +127,7 @@ function TasksPage({ role }) {
                 </div>
 
               </div>
-            </div>
+            </motion.div>
           ))
         )}
       </div>
