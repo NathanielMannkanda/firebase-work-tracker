@@ -15,6 +15,8 @@ import {
   doc
 } from "firebase/firestore";
 
+import SkeletonCard from "../components/SkeletonCard";
+
 function WorkerPage() {
 
   const [activeSession, setActiveSession] = useState(null);
@@ -253,11 +255,14 @@ function WorkerPage() {
   const item = {
     hidden: {
       opacity: 0,
-      y: 20
+      y: 15
     },
     show: {
       opacity: 1,
-      y: 0
+      y: 0,
+      transition: {
+        duration: 0.3
+      }
     }
   };
 
@@ -350,9 +355,11 @@ function WorkerPage() {
 
           {loadingTasks ? (
 
-            <p className="text-3xl font-bold">
-              Loading tasks...
-            </p>
+            <div className="space-y-3">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
 
           ) : tasks.length === 0 ? (
 
@@ -362,15 +369,23 @@ function WorkerPage() {
 
           ) : (
 
-            <div className="flex-1 min-w-0">
+            <motion.div 
+              variants={container}
+              initial="hidden"
+              animate="show"
+              className="flex-1 min-w-0"
+            >
 
               {tasks.map((task) => (
 
-                <div
+                <motion.div
+                  variants={item}
                   key={task.id}
                   className="border border-gray-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2 overflow-hidden"
                 >
-                  <div className="flex-1 min-w-0">
+                  <motion.div
+                    className="flex-1 min-w-0"
+                  >
 
                     <h4 className="font-semibold break-words">
                       {task.title}
@@ -394,12 +409,12 @@ function WorkerPage() {
                       </span>
                     </p>
 
-                  </div>
+                  </motion.div>
 
                   {task.status !== "completed" && (
                     <button
                       onClick={() => handleCompleteTask(task.id)}
-                      className="bg-black text-white px-4 py-2 rounded-xl w-full md:w-auto"
+                      className="bg-black text-white px-4 py-2 rounded-xl w-full md:w-auto cursor-pointer"
                     >
                       Complete
                     </button>
@@ -414,11 +429,11 @@ function WorkerPage() {
                     </button>
                   )}
 
-                </div>
+                </motion.div>
 
               ))}
 
-            </div>
+            </motion.div>
 
           )}
 
