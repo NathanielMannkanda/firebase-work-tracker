@@ -18,6 +18,9 @@ function TaskForm({ workers }) {
   const [showPopup, setShowPopup] = useState(false);
   const [assignedWorkerName, setAssignedWorkerName] = useState("");
 
+  //loading animations
+  //const [creatingTask, setCreatingTask] = useState(false);
+
   const handleCreateTask = async (e) => {
 
     e.preventDefault();

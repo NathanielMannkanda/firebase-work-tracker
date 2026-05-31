@@ -14,6 +14,7 @@ import {
 
   const [activeWorkers, setActiveWorkers] = useState([]);
   const [workers, setWorkers] = useState([]);
+  const [loadingWorkers, setLoadingWorkers] = useState(true);
   
   // realtimelistner useEffect
   useEffect(() => {
@@ -72,6 +73,7 @@ import {
         });
         
         setWorkers(workerList);
+        setLoadingWorkers(false);
       });
 
       return unsubscribe;
@@ -99,29 +101,42 @@ import {
         </h2>
 
         {workers.length === 0 ? (
-
-          <p>No workers found</p>
-
+          loadingWorkers ? (
+            <div>
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-[#1c1c1e p-9 rounded-2xl border border-gray-800 animate-pulse]"
+                >
+                  <div className="h-5 bg-gray-700 rounded w-40 mb-4"></div>
+                  <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-700 rounded w-26"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No workers found</p>
+          )
         ) : (
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }} 
-            className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
 
             {workers.map((worker) => (
 
               <div
                 key={worker.id}
-                className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 w-fit"
+                className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800"
               >
 
                 <h3 className="text-lg font-semibold">
                   {worker.name}
                 </h3>
 
-                <p className="text-gray-500">
+                <p className="text-gray-500 break-all">
                   {worker.email}
                 </p>
 
@@ -155,13 +170,13 @@ import {
 
         ) : (
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
 
             {activeWorkers.map((worker) => (
 
               <div
                 key={worker.id}
-                className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 w-fit hover:shadow-md transition"
+                className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 hover:shadow-md transition"
               >
 
                 <h3 className="text-lg font-semibold">

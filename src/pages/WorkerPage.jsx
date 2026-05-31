@@ -21,6 +21,9 @@ function WorkerPage() {
   const [elapsedTime, setElapsedTime] = useState("");
   const [tasks, setTasks] = useState([]);
 
+  //loading shi
+  const [loadingTasks, setLoadingTasks] = useState(true);
+
   const user = auth.currentUser;
 
   //check if worker is alr working/clocked in
@@ -230,6 +233,7 @@ function WorkerPage() {
         });
       });
       setTasks(taskList);
+      setLoadingTasks(false);
     });
 
     return () => unsubscribe();
@@ -260,7 +264,7 @@ function WorkerPage() {
   return (
     <DashboardLayout title="Worker Dashboard">
 
-      <div 
+      <div
         variants={container}
         initial="hidden"
         animate="show"
@@ -268,7 +272,7 @@ function WorkerPage() {
       >
 
         {/* STATUS CARD */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -317,7 +321,7 @@ function WorkerPage() {
         </motion.div>
 
         {/* HOURS CARD */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -334,7 +338,7 @@ function WorkerPage() {
         </motion.div>
 
         {/* TASKS CARD */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -344,13 +348,24 @@ function WorkerPage() {
             Assigned Taks
           </h3>
 
-          {tasks.length === 0 ? (
+          {loadingTasks ? (
+
+            <p className="text-3xl font-bold">
+              Loading tasks...
+            </p>
+
+          ) : tasks.length === 0 ? (
+
             <p className="text-3xl font-bold">
               No assigned tasks
             </p>
+
           ) : (
+
             <div className="flex-1 min-w-0">
+
               {tasks.map((task) => (
+
                 <div
                   key={task.id}
                   className="border border-gray-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2 overflow-hidden"
@@ -398,10 +413,13 @@ function WorkerPage() {
                       Clear
                     </button>
                   )}
+
                 </div>
 
               ))}
+
             </div>
+
           )}
 
         </motion.div>

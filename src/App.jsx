@@ -19,10 +19,11 @@ import ManagerPage from './pages/ManagerPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 import TasksPage from './pages/TasksPage';
 import SessionsPage from './pages/SessionsPage';
+import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
 
-  const [user] = useAuthState(auth);
+  const [user, authLoading] = useAuthState(auth);
 
   const [role, setRole] = useState(null);
   const [loadingRole, setLoadingRole] = useState(true);
@@ -56,6 +57,10 @@ function App() {
 
   }, [user]);
 
+  if(authLoading){
+    return <LoadingSpinner />;
+  }
+
   //if user isnt signed in
   if (!user) {
     return <SignIn />;
@@ -63,7 +68,18 @@ function App() {
 
   //load database
   if (loadingRole) {
-    return <div>Loading...</div>
+    return (
+      <div className='min-h-screen bg-[#000000] flex items-center justify-center'>
+        <div className='flex  flex-col items-center gap-4'>
+          <div className='w-12 h-12 border-4 border-gray-700 border-t-[#ff9f0a] rounded-full animate-spin'>
+            <p className='text-gray-400'>
+              Loading WorkTracker...
+            </p>
+          </div>
+
+        </div>
+      </div>
+    )
   }
 
   //no role selected yet
