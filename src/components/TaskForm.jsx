@@ -13,10 +13,14 @@ function TaskForm({ workers }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedWorker, setSelectedWorker] = useState("");
+  const [createTask, setCreatingTask]  = useState(false)
 
   //for popup
   const [showPopup, setShowPopup] = useState(false);
   const [assignedWorkerName, setAssignedWorkerName] = useState("");
+
+  //error popup
+  const [errorPopup, setErrorPopup] = useState("");
 
   //loading animations
   //const [creatingTask, setCreatingTask] = useState(false);
@@ -26,7 +30,12 @@ function TaskForm({ workers }) {
     e.preventDefault();
 
     if (!selectedWorker){
-      alert("please select a worker");
+      setErrorPopup("Please select a worker first");
+
+      setTimeout(() => {
+        setErrorPopup("");
+      }, 3000);
+
       return;
     }
 
@@ -35,6 +44,8 @@ function TaskForm({ workers }) {
     );
 
     try {
+      setCreatingTask(true);
+
       await addDoc(
         collection(firestore, "tasks"),
         {
@@ -59,20 +70,63 @@ function TaskForm({ workers }) {
       setDescription("");
       setSelectedWorker("");
 
+      setCreatingTask(false);
+
     }catch(error){
+      setCreatingTask(false);
       console.log(error);
     }
   };
 
   return (
     <>
+      {errorPopup && (
+        <motion.div
+          initial={{
+            opacity: 0,
+            x: 100
+          }}
+          animate={{
+            opacity: 1,
+            x: 0
+          }}
+          exit={{
+            opacity: 0,
+            x: 100
+          }}
+          transition={{
+            duration: 0.3
+          }}
+          className="fixed top-6 right-6 bg-red-500/10 border border-red-500 text-red-400 px-6 py-4 rounded-2xl shadow-2xl z-50"
+        >
+          {errorPopup}
+        </motion.div>
+      )}
+
+      {/*Sucess popup */}
       {showPopup && (
-        <div className="fixed top-6 right-6 bg-[#1c1c1c] text-white px-6 py-4 rounded-2xl z-50 animate-fade">
+        <motion.div
+          initial={{
+            opacity: 0,
+            x: 100
+          }}
+          animate={{
+            opacity: 1,
+            x: 0
+          }}
+          exit={{
+            opacity: 0,
+            x: 100
+          }}
+          transition={{
+            duration: 0.3
+          }} 
+          className="fixed top-6 right-6 bg-[#1c1c1c] text-white px-6 py-4 rounded-2xl z-50 animate-fade">
           Task assigned to{" "}
           <span className="font-bold">
             {assignedWorkerName}
           </span>
-        </div>
+        </motion.div>
       )}
       <motion.form
         initial={{ opacity: 0, y: 20 }}
@@ -126,9 +180,13 @@ function TaskForm({ workers }) {
 
           <button
             type="submit"
-            className="bg-[#000000] text-white px-4 py-3 rounded-xl w-full hover:opacity-90"
+            disabled={createTask}
+            className="bg-[#000000] text-white px-4 py-3 rounded-xl w-full hover:opacity-90 cursor-pointer disabled:opacity-90 disabled:cursor-not-allowed"
           >
-            Create Task
+            {createTask
+              ? "Creating Task..."
+              : "Create Task"
+            }
           </button>
 
         </div>
