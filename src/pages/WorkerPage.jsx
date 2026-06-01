@@ -251,7 +251,6 @@ function WorkerPage() {
     }
   };
 
-  // eslint-disable-next-line
   const item = {
     hidden: {
       opacity: 0,
