@@ -154,13 +154,13 @@ function SignIn(){
           transition={{
             duration: 0.3
           }}
-          className='fixed top-6 right-6 bg-red-500/10 border border-red-500 text-red-400 px-5 py-4 rounded-2xl shadow-2xl backdrop-bl ur-md fade-in z-50'>
+          className='fixed top-6 right-4 left-4 md:left-auto md:right-6 max-w-md bg-red-500/10 border border-red-500 text-red-400 px-5 py-4 rounded-2xl shadow-2xl backdrop-bl ur-md fade-in z-50'>
           {error}
         </motion.div>
       )}
       <div className="min-h-screen bg-[#000000] flex items-center justify-center px-4">
         
-      <div className='w-full max-w-md bg-[#1c1c1e] border border-gray-800 rounded-3xl p-8 shadow-2xl'>
+      <div className='w-full max-w-md bg-[#1c1c1e] border border-gray-800 rounded-3xl p-6 md:p-8 shadow-2xl'>
         <h1 className='text-4xl font-bold text-white mb-2'>
           Work Tracker
         </h1>

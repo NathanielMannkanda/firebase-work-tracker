@@ -30,7 +30,7 @@ function RoleSelect({ user, setRole }) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-2xl bg-[#1c1c1e] border border-gray-800 rounded-3xl p-10 shadow-2xl text-center mb-10">
+        className="w-full max-w-2xl bg-[#1c1c1e] border border-gray-800 rounded-3xl p-6 md:p-10 shadow-2xl text-center mb-10">
         <h1 className="text-4xl font-bold text-white mb-2">
           Work Tracker
         </h1>

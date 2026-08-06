@@ -97,7 +97,7 @@ function TaskForm({ workers }) {
           transition={{
             duration: 0.3
           }}
-          className="fixed top-6 right-6 bg-red-500/10 border border-red-500 text-red-400 px-6 py-4 rounded-2xl shadow-2xl z-50"
+          className="fixed top-6 right-4 left-4 md:left-auto md:right-6 max-w-md bg-red-500/10 border border-red-500 text-red-400 px-6 py-4 rounded-2xl shadow-2xl z-50"
         >
           {errorPopup}
         </motion.div>
@@ -121,7 +121,7 @@ function TaskForm({ workers }) {
           transition={{
             duration: 0.3
           }} 
-          className="fixed top-6 right-6 bg-[#1c1c1c] text-white px-6 py-4 rounded-2xl z-50 animate-fade">
+          className="fixed top-6 right-4 left-4 md:left-auto md:right-6 max-w-md bg-[#1c1c1c] text-white px-6 py-4 rounded-2xl z-50 animate-fade">
           Task assigned to{" "}
           <span className="font-bold">
             {assignedWorkerName}
@@ -133,7 +133,7 @@ function TaskForm({ workers }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         onSubmit={handleCreateTask}
-        className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 min-w-100 max-w-300 text-white"
+        className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm border border-gray-800 w-full max-w-300 text-white"
       >
         <h2 className="text-2xl font-bold mb-6">
           Create Task
