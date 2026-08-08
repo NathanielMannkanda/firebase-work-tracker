@@ -27,12 +27,15 @@ function App() {
 
   const [role, setRole] = useState(null);
   const [loadingRole, setLoadingRole] = useState(true);
+  //tracks whether the user has confirmed a role for this login session
+  const [roleConfirmed, setRoleConfirmed] = useState(false);
 
   useEffect(() => {
     const fetchRole = async () => {
 
       if (!user) {
         setRole(null);
+        setRoleConfirmed(false);
         setLoadingRole(false);
         return;
       } try {
@@ -50,6 +53,8 @@ function App() {
         console.log(error)
       }
 
+      //always re-prompt for a role on login
+      setRoleConfirmed(false);
       setLoadingRole(false);
     };
 
@@ -82,9 +87,17 @@ function App() {
     )
   }
 
-  //no role selected yet
-  if (!role) {
-    return <RoleSelect user={user} setRole={setRole} />;
+  //always confirm the role on login
+  if (!roleConfirmed) {
+    return (
+      <RoleSelect
+        user={user}
+        onRoleConfirmed={(confirmedRole) => {
+          setRole(confirmedRole);
+          setRoleConfirmed(true);
+        }}
+      />
+    );
   }
 
   return(
