@@ -7,7 +7,6 @@ import {
   onSnapshot
  } from "firebase/firestore";
  import DashboardLayout from "../components/layout/DashboardLayout";
- import TaskForm from "../components/TaskForm";
  import { motion } from "framer-motion";
 
  function ManagerPage() {
@@ -86,8 +85,6 @@ import {
     <DashboardLayout title="Manager Dashboard">
 
     <div className="space-y-8">
-
-      <TaskForm workers={workers}/>
 
       {/* ALL WORKERS */}
       <motion.div

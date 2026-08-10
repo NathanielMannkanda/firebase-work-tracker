@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
+import ProfileCard from "../ProfileCard";
 
 function DashboardLayout({ children, title}){
 
@@ -44,6 +45,8 @@ function DashboardLayout({ children, title}){
             ✕
           </button>
         </div>
+
+        <ProfileCard />
 
         <nav className="p-4 space-y-2">
 

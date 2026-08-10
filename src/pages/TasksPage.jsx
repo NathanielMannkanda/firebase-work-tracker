@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import DashboardLayout from "../components/layout/DashboardLayout";
+import TaskForm from "../components/TaskForm";
 
 import { firestore } from "../firebase/firebase";
 
@@ -20,8 +21,41 @@ function TasksPage({ role }) {
 
   const [tasks, setTasks] = useState([]);
   const [activeTab, setActiveTab] = useState("active");
+  const [workers, setWorkers] = useState([]);
 
   const user = auth.currentUser;
+
+  //managers get a worker list so they can assign tasks from here
+  useEffect(() => {
+
+    if (role !== "manager") return;
+
+    const usersRef = collection(
+      firestore,
+      "users"
+    );
+
+    const q = query(
+      usersRef,
+      where("role", "==", "worker")
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const workerList = [];
+
+      snapshot.forEach((doc) => {
+        workerList.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+
+      setWorkers(workerList);
+    });
+
+    return () => unsubscribe();
+
+  }, [role]);
 
   useEffect(() => {
 
@@ -118,6 +152,8 @@ function TasksPage({ role }) {
         <h2 className="text-3xl font-bold">
           All Tasks
         </h2>
+
+        {role === "manager" && <TaskForm workers={workers} />}
 
         {/* TABS */}
         <div className="flex gap-2 border-b border-gray-800">
