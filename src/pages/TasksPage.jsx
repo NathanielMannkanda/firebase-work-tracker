@@ -10,14 +10,16 @@ import {
   collection,
   onSnapshot,
   query,
-  where
+  where,
+  updateDoc,
+  doc
 } from "firebase/firestore";
 import { motion } from "framer-motion";
-motion
 
 function TasksPage({ role }) {
 
   const [tasks, setTasks] = useState([]);
+  const [activeTab, setActiveTab] = useState("active");
 
   const user = auth.currentUser;
 
@@ -69,6 +71,47 @@ function TasksPage({ role }) {
 
   }, [user, role]);
 
+  //Task completion checker
+  const handleCompleteTask = async (taskId) => {
+    try {
+      const taskRef = doc(
+        firestore,
+        "tasks",
+        taskId
+      );
+
+      await updateDoc(taskRef, {
+        status: "completed"
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //for clearing tasks
+  const handleClearTask = async (taskId) => {
+    try {
+      const taskRef = doc(
+        firestore,
+        "tasks",
+        taskId
+      );
+
+      await updateDoc(taskRef, {
+        clearedByWorker: true
+      });
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  //hide tasks the worker has cleared, then split by status
+  const visibleTasks = tasks.filter((task) => !task.clearedByWorker);
+  const activeTasks = visibleTasks.filter((task) => task.status !== "completed");
+  const completedTasks = visibleTasks.filter((task) => task.status === "completed");
+
+  const displayedTasks = activeTab === "active" ? activeTasks : completedTasks;
+
   return (
     <DashboardLayout title="Tasks">
       <div className="space-y-4">
@@ -76,10 +119,39 @@ function TasksPage({ role }) {
           All Tasks
         </h2>
 
-        {tasks.length === 0 ? (
-          <p>No tasks found</p>
+        {/* TABS */}
+        <div className="flex gap-2 border-b border-gray-800">
+          <button
+            onClick={() => setActiveTab("active")}
+            className={`px-4 py-2 font-medium border-b-2 transition cursor-pointer ${
+              activeTab === "active"
+                ? "border-[#ff9f0a] text-white"
+                : "border-transparent text-gray-500 hover:text-white"
+            }`}
+          >
+            Active ({activeTasks.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab("completed")}
+            className={`px-4 py-2 font-medium border-b-2 transition cursor-pointer ${
+              activeTab === "completed"
+                ? "border-[#ff9f0a] text-white"
+                : "border-transparent text-gray-500 hover:text-white"
+            }`}
+          >
+            Completed ({completedTasks.length})
+          </button>
+        </div>
+
+        {displayedTasks.length === 0 ? (
+          <p>
+            {activeTab === "active"
+              ? "No active tasks"
+              : "No completed tasks"}
+          </p>
         ) : (
-          tasks.map((task) => (
+          displayedTasks.map((task) => (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -125,6 +197,28 @@ function TasksPage({ role }) {
                   </div>
 
                 </div>
+
+                {role === "worker" && (
+                  <>
+                    {task.status !== "completed" && (
+                      <button
+                        onClick={() => handleCompleteTask(task.id)}
+                        className="bg-black text-white px-4 py-2 rounded-xl w-full md:w-auto cursor-pointer"
+                      >
+                        Complete
+                      </button>
+                    )}
+
+                    {task.status === "completed" && (
+                      <button
+                        onClick={() => handleClearTask(task.id)}
+                        className="cursor-pointer bg-[#ff9f0a] px-4 py-2 rounded-xl w-full md:w-auto"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </>
+                )}
 
               </div>
             </motion.div>

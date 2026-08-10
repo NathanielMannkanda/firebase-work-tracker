@@ -15,16 +15,10 @@ import {
   doc
 } from "firebase/firestore";
 
-import SkeletonCard from "../components/SkeletonCard";
-
 function WorkerPage() {
 
   const [activeSession, setActiveSession] = useState(null);
   const [elapsedTime, setElapsedTime] = useState("");
-  const [tasks, setTasks] = useState([]);
-
-  //loading shi
-  const [loadingTasks, setLoadingTasks] = useState(true);
 
   const user = auth.currentUser;
 
@@ -130,40 +124,6 @@ function WorkerPage() {
     }
   }
 
-  //Task completion checker
-  const handleCompleteTask = async (taskId) => {
-    try {
-      const taskRef = doc(
-        firestore,
-        "tasks",
-        taskId
-      );
-
-      await updateDoc(taskRef, {
-        status: "completed"
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  //for clearing tasks
-  const handleClearTask = async (taskId) => {
-    try {
-      const taskRef = doc(
-        firestore,
-        "tasks",
-        taskId
-      );
-
-      await updateDoc(taskRef, {
-        clearedByWorker: true
-      });
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   useEffect(() => {
 
     if (!activeSession?.clockIn) {
@@ -211,69 +171,10 @@ function WorkerPage() {
     // eslint-disable-next-line
   }, [activeSession]);
 
-  useEffect(() => {
-    if (!user) return;
-
-    const tasksRef = collection(
-      firestore,
-      "tasks"
-    );
-
-    const q = query(
-      tasksRef,
-      where("assignedTo", "==", user.uid),
-      where("clearedByWorker", "==", false)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const taskList = [];
-
-      snapshot.forEach((doc) => {
-        taskList.push({
-          id: doc.id,
-          ...doc.data()
-        });
-      });
-      setTasks(taskList);
-      setLoadingTasks(false);
-    });
-
-    return () => unsubscribe();
-  }, [user]);
-
-  //animations
-  const container = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  };
-
-  const item = {
-    hidden: {
-      opacity: 0,
-      y: 15
-    },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3
-      }
-    }
-  };
-
   return (
     <DashboardLayout title="Worker Dashboard">
 
-      <div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* STATUS CARD */}
         <motion.div
@@ -338,103 +239,6 @@ function WorkerPage() {
           <p className="text-3xl font-bold">
             {elapsedTime}
           </p>
-
-        </motion.div>
-
-        {/* TASKS CARD */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="bg-[#1c1c1e] p-6 rounded-2xl shadow-sm md:col-span-3">
-
-          <h3 className="text-xl font-semibold mb-6">
-            Assigned Taks
-          </h3>
-
-          {loadingTasks ? (
-
-            <div className="space-y-3">
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
-            </div>
-
-          ) : tasks.length === 0 ? (
-
-            <p className="text-3xl font-bold">
-              No assigned tasks
-            </p>
-
-          ) : (
-
-            <motion.div 
-              variants={container}
-              initial="hidden"
-              animate="show"
-              className="flex-1 min-w-0"
-            >
-
-              {tasks.map((task) => (
-
-                <motion.div
-                  variants={item}
-                  key={task.id}
-                  className="border border-gray-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2 overflow-hidden"
-                >
-                  <motion.div
-                    className="flex-1 min-w-0"
-                  >
-
-                    <h4 className="font-semibold break-words">
-                      {task.title}
-                    </h4>
-
-                    <p className="text-gray-500 break-all">
-                      {task.description}
-                    </p>
-
-                    <p className="mt-2 text-sm">
-                      Status:{" "}
-
-                      <span
-                        className={
-                          task.status === "completed"
-                            ? "text-green-600"
-                            : "text-yellow-600"
-                        }
-                      >
-                        {task.status}
-                      </span>
-                    </p>
-
-                  </motion.div>
-
-                  {task.status !== "completed" && (
-                    <button
-                      onClick={() => handleCompleteTask(task.id)}
-                      className="bg-black text-white px-4 py-2 rounded-xl w-full md:w-auto cursor-pointer"
-                    >
-                      Complete
-                    </button>
-                  )}
-
-                  {task.status === "completed" && (
-                    <button
-                      onClick={() => handleClearTask(task.id)}
-                      className="cursor-pointer bg-[#ff9f0a] px-4 py-2 rounded-xl w-full md:w-auto"
-                    >
-                      Clear
-                    </button>
-                  )}
-
-                </motion.div>
-
-              ))}
-
-            </motion.div>
-
-          )}
 
         </motion.div>
 
